@@ -1,0 +1,1 @@
+/* Archivo de fuente PixelifySans-Regular.ttf para uso global en el proyecto. */
