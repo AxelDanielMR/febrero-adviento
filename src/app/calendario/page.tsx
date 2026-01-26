@@ -47,7 +47,6 @@ export default function Calendario() {
       <div className="w-full flex justify-center mt-6">
         {/* AdvientoGrid muestra las cajas y la paginación */}
         {/* Usar import normal, asumiendo que AdvientoGrid es client component */}
-        {/* @ts-expect-error Server Component */}
         <AdvientoGrid />
       </div>
     </div>
