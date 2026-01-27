@@ -6,8 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 
 export default function Home() {
-  const [showGif, setShowGif] = useState(true);
+  const [gifState, setGifState] = useState<'static' | 'animating' | 'hidden'>('static');
   const [showModal, setShowModal] = useState(false);
+  const [gifKey, setGifKey] = useState(0);
   const router = useRouter();
   const { user } = useAuth();
 
@@ -16,14 +17,16 @@ export default function Home() {
       router.replace("/login");
       return;
     }
-    if (showGif) {
-      const timer = setTimeout(() => {
-        setShowGif(false);
-        setShowModal(true);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [showGif, user, router]);
+  }, [user, router]);
+
+  const handleGifClick = () => {
+    setGifKey(prev => prev + 1); // fuerza reinicio del gif
+    setGifState('animating');
+    setTimeout(() => {
+      setGifState('hidden');
+      setShowModal(true);
+    }, 2700); // Duración de la animación en ms (ajustada a 2.5s)
+  };
 
   const handleBearClick = () => {
     router.push("/calendario");
@@ -38,9 +41,18 @@ export default function Home() {
         backgroundSize: '200px',
       }}
     >
-      {showGif && (
+      {gifState === 'static' && (
         <img
-          src="/images/open_mail.gif"
+          src="/images/open_mail_static.png"
+          alt="Carta cerrada"
+          className="w-40 h-40 object-contain cursor-pointer"
+          onClick={handleGifClick}
+        />
+      )}
+      {gifState === 'animating' && (
+        <img
+          key={gifKey}
+          src={`/images/open_mail.gif?key=${gifKey}`}
           alt="Animación abriendo carta"
           className="w-40 h-40 object-contain"
         />
