@@ -18,8 +18,8 @@ interface AdvientoGridProps {
 
 const advientoDays: AdvientoDay[] = [
   // Demo data, replace with real rewards and dates
-  { day: 1, openDate: new Date('2026-01-24'), reward: { type: 'text', content: '¡Feliz día 1!' } },
-  { day: 2, openDate: new Date('2026-01-25'), reward: { type: 'image', content: '/images/reward2.png' } },
+  { day: 1, openDate: new Date('2026-01-24'), reward: { type: 'video', content: '/video/presentacion.mp4' } },
+  { day: 2, openDate: new Date('2026-01-25'), reward: { type: 'image', content: ['/images/day_1_01.png', '/images/day_1_02.png'] } },
   { day: 3, openDate: new Date('2026-01-26'), reward: { type: 'audio', content: '/audio/reward3.mp3' } },
   { day: 4, openDate: new Date('2026-01-27'), reward: { type: 'video', content: '/video/reward4.mp4' } },
   { day: 5, openDate: new Date('2026-01-28'), reward: { type: 'text', content: '¡Sigue así!' } },

@@ -7,7 +7,7 @@ export interface AdvientoBoxProps {
   openDate: Date;
   reward: {
     type: RewardType;
-    content: string;
+    content: string | string[];
   };
   today?: Date; // For testing, defaults to new Date()
   opened?: boolean;
@@ -30,6 +30,9 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
       setShowModal(true);
       if (onOpen) onOpen(day);
     } else if (isOpened) {
+      setShowModal(true);
+    } else if (canOpen) {
+      // Si está abierta pero no en local, igual permite abrir
       setShowModal(true);
     }
   };
@@ -54,35 +57,35 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
             </span>
           </>
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-white rounded shadow p-2 relative">
+          <div className="w-full h-full flex items-center justify-center relative group" style={{ cursor: 'pointer' }} onClick={handleOpen}>
+            {/* Fondo marrón */}
+            <div className="absolute inset-0 w-full h-full rounded" style={{ background: '#231406', zIndex: 0 }} />
             {/* Recompensa */}
-            {reward.type === 'image' && (
-              <img
-                src={reward.content}
-                alt="Recompensa"
-                className="max-w-full max-h-full rounded mb-2 cursor-zoom-in"
-                onClick={e => {
-                  e.stopPropagation();
-                  setShowImageModal(true);
-                }}
-                title="Ver en grande"
-              />
-            )}
-            {reward.type === 'text' && (
-              <span className="text-center text-lg font-semibold">{reward.content}</span>
-            )}
-            {reward.type === 'audio' && (
-              <audio controls src={reward.content} className="w-full" />
-            )}
-            {reward.type === 'video' && (
-              <video controls src={reward.content} className="max-w-full max-h-full rounded" />
-            )}
-            {/* Imagen opened.png por encima */}
+            <div className="relative z-10 w-full h-full flex items-center justify-center">
+              {reward.type === 'image' && (
+                <img
+                  src={Array.isArray(reward.content) ? reward.content[0] : reward.content}
+                  alt="Recompensa"
+                  className="max-w-full max-h-full rounded mb-2"
+                  draggable={false}
+                />
+              )}
+              {reward.type === 'text' && (
+                <span className="text-center text-lg font-semibold text-white">{reward.content}</span>
+              )}
+              {reward.type === 'audio' && (
+                <audio controls src={reward.content} className="w-full" />
+              )}
+              {reward.type === 'video' && (
+                <video controls src={reward.content} className="max-w-full max-h-full rounded" />
+              )}
+            </div>
+            {/* Imagen opened.png por encima, ahora permite clic para abrir modal */}
             <img
               src="/images/opened.png"
               alt="Caja abierta"
-              className="absolute inset-0 w-full h-full object-cover rounded shadow pointer-events-none"
-              style={{ zIndex: 2 }}
+              className="absolute inset-0 w-full h-full object-cover rounded shadow"
+              style={{ zIndex: 20, pointerEvents: 'none' }}
             />
             {/* El número ya no se muestra una vez abierta */}
           </div>
@@ -90,20 +93,55 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
       </div>
       {/* Modal de recompensa */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-xl p-6 shadow-xl max-w-xs flex flex-col items-center gap-4 border-2 border-pink-300 relative">
-            <span className="text-lg text-pink-700 font-bold mb-2">¡Recompensa del día {padDay(day)}!</span>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setShowModal(false)}>
+          <div className="bg-white rounded-xl p-6 shadow-xl max-w-lg flex flex-col items-center gap-4 border-2 border-pink-300 relative" onClick={e => e.stopPropagation()}>
             {reward.type === 'image' && (
-              <img
-                src={reward.content}
-                alt="Recompensa"
-                className="max-w-full max-h-60 rounded mb-2 cursor-zoom-in"
-                onClick={e => {
-                  e.stopPropagation();
-                  setShowImageModal(true);
-                }}
-                title="Ver en grande"
-              />
+              <div className="relative w-full flex flex-col items-center">
+                <span className="font-bold text-lg text-pink-700 mb-2">Nuevo Sticker</span>
+                <div className="relative w-full flex justify-center">
+                  <img
+                    src={Array.isArray(reward.content) ? reward.content[0] : reward.content}
+                    alt="Recompensa grande"
+                    className="max-w-full max-h-[90vh] rounded mb-2"
+                    draggable={false}
+                  />
+                  {Array.isArray(reward.content) ? (
+                    <button
+                      className="absolute bottom-2 right-2 bg-white/80 rounded-full p-2 shadow hover:bg-pink-100 transition flex items-center justify-center"
+                      style={{ zIndex: 10 }}
+                      title="Descargar ambas imágenes"
+                      onClick={async () => {
+                        for (const img of reward.content) {
+                          const link = document.createElement('a');
+                          link.href = img;
+                          link.download = img.split('/').pop();
+                          document.body.appendChild(link);
+                          link.click();
+                          document.body.removeChild(link);
+                        }
+                      }}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7 text-pink-700">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4m-9 9h14" />
+                      </svg>
+                    </button>
+                  ) : (
+                    <a
+                      href={reward.content}
+                      download
+                      className="absolute bottom-2 right-2 bg-white/80 rounded-full p-2 shadow hover:bg-pink-100 transition flex items-center justify-center"
+                      title="Descargar imagen"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ zIndex: 10 }}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7 text-pink-700">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4m-9 9h14" />
+                      </svg>
+                    </a>
+                  )}
+                </div>
+              </div>
             )}
             {reward.type === 'text' && (
               <span className="text-center text-lg font-semibold">{reward.content}</span>
@@ -111,44 +149,17 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
             {reward.type === 'audio' && (
               <audio controls src={reward.content} className="w-full" />
             )}
-            {reward.type === 'video' && (
-              <video controls src={reward.content} className="max-w-full max-h-60 rounded" />
+            {reward.type === 'video' && showModal && (
+              <video controls src={reward.content} className="max-w-full max-h-60 rounded" autoPlay={false} />
             )}
-            <div className="flex flex-row mt-4 w-full items-center">
-              <div className="flex-1 flex justify-center">
-                <button
-                  className="px-4 py-1 rounded bg-pink-200 text-pink-800 font-bold hover:bg-pink-300 transition"
-                  onClick={() => setShowModal(false)}
-                >Cerrar</button>
-              </div>
-            </div>
-      {/* Modal para ver imagen en grande y descargar */}
-      {showImageModal && reward.type === 'image' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70" onClick={() => setShowImageModal(false)}>
-          <div className="bg-white rounded-xl p-4 shadow-xl flex flex-col items-center gap-4 border-2 border-pink-300 relative max-w-lg" onClick={e => e.stopPropagation()}>
-            <img src={reward.content} alt="Recompensa grande" className="max-w-full max-h-[70vh] rounded" />
-            <div className="flex w-full justify-between items-center mt-2">
+            <div className="w-full flex flex-col items-center mt-4 gap-2">
               <button
-                className="px-4 py-1 rounded bg-pink-200 text-pink-800 font-bold hover:bg-pink-300 transition"
-                onClick={() => setShowImageModal(false)}
+                className="px-4 py-1 rounded bg-pink-200 text-pink-800 font-bold hover:bg-pink-300 transition mx-auto block"
+                style={{ minWidth: 100 }}
+                onClick={() => setShowModal(false)}
               >Cerrar</button>
-              <a
-                href={reward.content}
-                download
-                className="text-pink-700 hover:text-pink-900 ml-2"
-                title="Descargar imagen"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4m-9 9h14" />
-                </svg>
-              </a>
             </div>
-          </div>
-        </div>
-      )}
-          </div>
+            </div>
         </div>
       )}
     </>

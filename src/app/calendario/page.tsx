@@ -53,10 +53,7 @@ export default function Calendario() {
               className="w-8 h-8"
             />
           </button>
-          <button
-            className="ml-4 px-3 py-1 rounded bg-pink-200 text-pink-800 font-bold hover:bg-pink-300 transition"
-            onClick={handleLogout}
-          >Cerrar sesión</button>
+
         </div>
         {/* Modal de información */}
         {showInfo && (

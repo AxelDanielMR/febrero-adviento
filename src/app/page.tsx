@@ -28,8 +28,14 @@ export default function Home() {
     }, 2700); // Duración de la animación en ms (ajustada a 2.5s)
   };
 
+
+  const [bearState, setBearState] = useState<'normal' | 'clicked'>('normal');
+
   const handleBearClick = () => {
-    router.push("/calendario");
+    setBearState('clicked');
+    setTimeout(() => {
+      router.push("/calendario");
+    }, 1000);
   };
 
   return (
@@ -67,12 +73,20 @@ export default function Home() {
           <CardContent className="flex flex-col items-center gap-4">
             <span className="text-lg text-pink-700">Feliz mes del amor</span>
             <span className="text-base text-zinc-700">Para continuar pícale al amorcito</span>
-            <img
-              src="/images/osito_01.png"
-              alt="Osito amorcito"
-              className="w-16 h-16 object-contain mt-2 cursor-pointer hover:scale-110 transition"
-              onClick={handleBearClick}
-            />
+            {bearState === 'normal' ? (
+              <img
+                src="/images/osito_01.png"
+                alt="Osito amorcito"
+                className="w-16 h-16 object-contain mt-2 cursor-pointer hover:scale-110 transition"
+                onClick={handleBearClick}
+              />
+            ) : (
+              <img
+                src="/images/osito_02.png"
+                alt="Osito amorcito clickeado"
+                className="w-16 h-16 object-contain mt-2"
+              />
+            )}
           </CardContent>
         </Card>
       )}

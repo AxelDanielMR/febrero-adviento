@@ -2,8 +2,7 @@
 import { useAuth } from "../../components/AuthProvider";
 import Login from "../../components/Login";
 
+// Esta página ya no es necesaria porque el login se maneja globalmente en AuthProvider
 export default function LoginPage() {
-  const { user, setUser } = useAuth();
-  if (user) return null;
-  return <Login onLogin={setUser} />;
+  return null;
 }

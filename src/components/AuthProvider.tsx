@@ -29,7 +29,20 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
 
   return (
     <AuthContext.Provider value={{ user, setUser }}>
-      {user ? children : <Login onLogin={setUser} />}
+      {user ? (
+        <>
+          {children}
+          {/* Botón de cerrar sesión abajo a la derecha */}
+          <button
+            onClick={() => setUser(null)}
+            className="fixed bottom-4 right-4 z-50 bg-pink-500 text-white px-4 py-2 rounded-full shadow-lg hover:bg-pink-600 transition"
+          >
+            Cerrar sesión
+          </button>
+        </>
+      ) : (
+        <Login onLogin={setUser} />
+      )}
     </AuthContext.Provider>
   );
 }
