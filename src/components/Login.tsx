@@ -15,7 +15,7 @@ export default function Login({ onLogin }: { onLogin: (user: string) => void }) 
     setLoading(true);
     try {
       const usersRef = collection(db, "usuarios");
-      const q = query(usersRef, where("usuario", "==", username), where("contraseña", "==", password));
+      const q = query(usersRef, where("usuario", "==", username), where("clave", "==", password));
       const snapshot = await getDocs(q);
       if (!snapshot.empty) {
         onLogin(username);

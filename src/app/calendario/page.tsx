@@ -2,15 +2,39 @@
 "use client";
 import { useState, useEffect } from "react";
 import { AdvientoGrid } from "../../components/AdvientoGrid";
+import Login from "../../components/Login";
+import { useUserProgress } from "../../lib/useUserProgress";
 
 export default function Calendario() {
   const [showInfo, setShowInfo] = useState(false);
   const [jump, setJump] = useState(true);
+  const [user, setUser] = useState<string | null>(null);
+
+  // Persistencia de sesión en localStorage
+  useEffect(() => {
+    const savedUser = localStorage.getItem("advientoUser");
+    if (savedUser) setUser(savedUser);
+  }, []);
+  const handleLogin = (username: string) => {
+    setUser(username);
+    localStorage.setItem("advientoUser", username);
+  };
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem("advientoUser");
+  };
+
+  // Progreso del usuario
+  const { openedBoxes, openBox, loading: loadingProgress } = useUserProgress(user);
 
   useEffect(() => {
     const timer = setTimeout(() => setJump(false), 3000);
     return () => clearTimeout(timer);
   }, []);
+
+  if (!user) {
+    return <Login onLogin={handleLogin} />;
+  }
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center animated-bg">
@@ -29,6 +53,10 @@ export default function Calendario() {
               className="w-8 h-8"
             />
           </button>
+          <button
+            className="ml-4 px-3 py-1 rounded bg-pink-200 text-pink-800 font-bold hover:bg-pink-300 transition"
+            onClick={handleLogout}
+          >Cerrar sesión</button>
         </div>
         {/* Modal de información */}
         {showInfo && (
@@ -46,8 +74,7 @@ export default function Calendario() {
       {/* Aquí irá el grid de días */}
       <div className="w-full flex justify-center mt-6">
         {/* AdvientoGrid muestra las cajas y la paginación */}
-        {/* Usar import normal, asumiendo que AdvientoGrid es client component */}
-        <AdvientoGrid />
+        <AdvientoGrid openedBoxes={openedBoxes} openBox={openBox} loadingProgress={loadingProgress} />
       </div>
     </div>
   );

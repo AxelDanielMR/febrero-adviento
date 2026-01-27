@@ -10,22 +10,26 @@ export interface AdvientoBoxProps {
     content: string;
   };
   today?: Date; // For testing, defaults to new Date()
+  opened?: boolean;
+  onOpen?: (day: number) => void;
 }
 
 const padDay = (day: number) => day.toString().padStart(2, '0');
 
-export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward, today }) => {
-  const [opened, setOpened] = useState(false);
+export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward, today, opened, onOpen }) => {
+  const [localOpened, setLocalOpened] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
   const now = today || new Date();
+  const isOpened = opened || localOpened;
   const canOpen = now >= openDate;
 
   const handleOpen = () => {
-    if (!opened && canOpen) {
-      setOpened(true);
+    if (!isOpened && canOpen) {
+      setLocalOpened(true);
       setShowModal(true);
-    } else if (opened) {
+      if (onOpen) onOpen(day);
+    } else if (isOpened) {
       setShowModal(true);
     }
   };
@@ -37,7 +41,7 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
         onClick={handleOpen}
         style={{ width: 180, height: 180 }}
       >
-        {!opened ? (
+        {!isOpened ? (
           <>
             <img
               src="/images/closed.png"

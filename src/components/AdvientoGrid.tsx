@@ -10,6 +10,12 @@ interface AdvientoDay {
   };
 }
 
+interface AdvientoGridProps {
+  openedBoxes?: number[];
+  openBox?: (day: number) => void;
+  loadingProgress?: boolean;
+}
+
 const advientoDays: AdvientoDay[] = [
   // Demo data, replace with real rewards and dates
   { day: 1, openDate: new Date('2026-01-24'), reward: { type: 'text', content: '¡Feliz día 1!' } },
@@ -33,7 +39,7 @@ const PAGES = [
   { start: 7, end: 14 },  // 8-14
 ];
 
-export const AdvientoGrid: React.FC = () => {
+export const AdvientoGrid: React.FC<AdvientoGridProps> = ({ openedBoxes = [], openBox, loadingProgress }) => {
   const [page, setPage] = useState(0);
   const { start, end } = PAGES[page];
   const daysToShow = advientoDays.slice(start, end);
@@ -42,15 +48,16 @@ export const AdvientoGrid: React.FC = () => {
   const isLastPage = page === PAGES.length - 1;
   let gridRows: AdvientoDay[][] = [];
   if (!isLastPage) {
-    // 6 elementos: 3 filas de 2
     for (let i = 0; i < daysToShow.length; i += 2) {
       gridRows.push(daysToShow.slice(i, i + 2));
     }
   } else {
-    // Última página: 6 arriba (3 filas de 2), último centrado
     for (let i = 0; i < daysToShow.length - 1; i += 2) {
       gridRows.push(daysToShow.slice(i, i + 2));
     }
+  }
+  if (loadingProgress) {
+    return <div className="text-pink-700 font-bold text-lg mt-8">Cargando progreso...</div>;
   }
   return (
     <div className="w-full flex flex-col items-center">
@@ -58,13 +65,23 @@ export const AdvientoGrid: React.FC = () => {
         {gridRows.map((row, idx) => (
           <div key={idx} className="flex flex-row gap-6 justify-center">
             {row.map((day) => (
-              <AdvientoBox key={day.day} {...day} />
+              <AdvientoBox
+                key={day.day}
+                {...day}
+                opened={openedBoxes.includes(day.day)}
+                onOpen={openBox}
+              />
             ))}
           </div>
         ))}
         {isLastPage && (
           <div className="flex justify-center mt-6">
-            <AdvientoBox key={daysToShow[daysToShow.length - 1].day} {...daysToShow[daysToShow.length - 1]} />
+            <AdvientoBox
+              key={daysToShow[daysToShow.length - 1].day}
+              {...daysToShow[daysToShow.length - 1]}
+              opened={openedBoxes.includes(daysToShow[daysToShow.length - 1].day)}
+              onOpen={openBox}
+            />
           </div>
         )}
       </div>
