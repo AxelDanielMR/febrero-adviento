@@ -23,39 +23,81 @@ export default function Login({ onLogin }: { onLogin: (user: string) => void }) 
         setError("Usuario o contraseña incorrectos");
       }
     } catch (err) {
-      setError("Error al conectar con la base de datos");
+      console.error("Login error:", err);
+      setError(err instanceof Error ? err.message : "Error al conectar con la base de datos");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-xs mx-auto mt-12 p-6 bg-white rounded-xl shadow border border-pink-200">
-      <h2 className="text-2xl font-bold text-pink-700 text-center">Iniciar sesión</h2>
-      <input
-        type="text"
-        placeholder="Usuario"
-        value={username}
-        onChange={e => setUsername(e.target.value)}
-        className="border rounded px-3 py-2"
-        required
-      />
-      <input
-        type="password"
-        placeholder="Contraseña"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-        className="border rounded px-3 py-2"
-        required
-      />
-      {error && <span className="text-red-600 text-sm text-center">{error}</span>}
-      <button
-        type="submit"
-        className="bg-pink-500 text-white font-bold py-2 rounded hover:bg-pink-600 transition"
-        disabled={loading}
+    <div 
+      className="min-h-screen w-full flex items-center justify-center"
+      style={{
+        backgroundImage: "url('/images/bg-hards.png')",
+        backgroundRepeat: 'repeat',
+        backgroundSize: '200px',
+      }}
+    >
+      <form 
+        onSubmit={handleSubmit} 
+        className="flex flex-col gap-4 max-w-md w-full mx-4 p-8 bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl border-4 border-pink-400"
+        style={{
+          boxShadow: '0 8px 32px rgba(236, 72, 153, 0.3), inset 0 2px 8px rgba(255, 255, 255, 0.6)'
+        }}
       >
-        {loading ? "Cargando..." : "Entrar"}
-      </button>
-    </form>
+        <div className="flex flex-col items-center gap-2 mb-2">
+          <h2 className="text-3xl font-bold text-pink-600 text-center drop-shadow-lg" style={{ textShadow: '2px 2px 4px rgba(236, 72, 153, 0.3)' }}>
+            💕 Iniciar Sesión 💕
+          </h2>
+          <div className="flex gap-2">
+            <span className="text-2xl">🌸</span>
+            <span className="text-2xl">💖</span>
+            <span className="text-2xl">🌸</span>
+          </div>
+        </div>
+        
+        <div className="flex flex-col gap-1">
+          <input
+            type="text"
+            placeholder="a veces te digo amor, pero casi siempre te digo..."
+            value={username}
+            onChange={e => setUsername(e.target.value.toLowerCase())}
+            className="border-2 border-pink-300 rounded-lg px-4 py-3 text-sm placeholder:text-pink-400/70 focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition"
+            required
+          />
+        </div>
+        
+        <div className="flex flex-col gap-1">
+          <input
+            type="password"
+            placeholder="seguido te digo que te amo, pero aun mas seguido te digo..."
+            value={password}
+            onChange={e => setPassword(e.target.value.toLowerCase())}
+            className="border-2 border-pink-300 rounded-lg px-4 py-3 text-sm placeholder:text-pink-400/70 focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition"
+            required
+          />
+        </div>
+        
+        <p className="text-xs text-pink-600 text-center italic">✨ Usa solo minúsculas ✨</p>
+        
+        {error && (
+          <div className="bg-red-50 border-2 border-red-300 rounded-lg p-3">
+            <span className="text-red-600 text-sm text-center block">{error}</span>
+          </div>
+        )}
+        
+        <button
+          type="submit"
+          className="bg-gradient-to-r from-pink-400 to-pink-600 text-white font-bold py-3 rounded-lg hover:from-pink-500 hover:to-pink-700 transition-all transform hover:scale-105 active:scale-95 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+          style={{
+            boxShadow: '0 4px 14px rgba(236, 72, 153, 0.4)'
+          }}
+          disabled={loading}
+        >
+          {loading ? "💗 Cargando..." : "💝 Entrar 💝"}
+        </button>
+      </form>
+    </div>
   );
 }

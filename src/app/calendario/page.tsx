@@ -2,27 +2,15 @@
 "use client";
 import { useState, useEffect } from "react";
 import { AdvientoGrid } from "../../components/AdvientoGrid";
-import Login from "../../components/Login";
+import { useAuth } from "../../components/AuthProvider";
 import { useUserProgress } from "../../lib/useUserProgress";
+import { useRouter } from "next/navigation";
 
 export default function Calendario() {
   const [showInfo, setShowInfo] = useState(false);
   const [jump, setJump] = useState(true);
-  const [user, setUser] = useState<string | null>(null);
-
-  // Persistencia de sesión en localStorage
-  useEffect(() => {
-    const savedUser = localStorage.getItem("advientoUser");
-    if (savedUser) setUser(savedUser);
-  }, []);
-  const handleLogin = (username: string) => {
-    setUser(username);
-    localStorage.setItem("advientoUser", username);
-  };
-  const handleLogout = () => {
-    setUser(null);
-    localStorage.removeItem("advientoUser");
-  };
+  const { user } = useAuth();
+  const router = useRouter();
 
   // Progreso del usuario
   const { openedBoxes, openBox, loading: loadingProgress } = useUserProgress(user);
@@ -32,8 +20,14 @@ export default function Calendario() {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    if (!user) {
+      router.replace("/");
+    }
+  }, [user, router]);
+
   if (!user) {
-    return <Login onLogin={handleLogin} />;
+    return null;
   }
 
   return (

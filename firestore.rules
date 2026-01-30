@@ -2,6 +2,17 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Permitir lectura pública (temporal) de la colección `usuarios` para el login sencillo
+    match /usuarios/{userId} {
+      allow read: if true;
+    }
+
+    // Permitir lectura/escritura (temporal) de la colección `progresos` para guardar progreso de usuario
+    match /progresos/{userId} {
+      allow read, write: if true;
+    }
+
+    // Mantener el resto bloqueado
     match /{document=**} {
       allow read, write: if false;
     }

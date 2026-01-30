@@ -23,6 +23,7 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
   const now = today || new Date();
   const isOpened = opened || localOpened;
   const canOpen = now >= openDate;
+  const content = Array.isArray(reward.content) ? reward.content[0] : reward.content;
 
   const handleOpen = () => {
     if (!isOpened && canOpen) {
@@ -71,13 +72,13 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
                 />
               )}
               {reward.type === 'text' && (
-                <span className="text-center text-lg font-semibold text-white">{reward.content}</span>
+                <span className="text-center text-lg font-semibold text-white">{content}</span>
               )}
               {reward.type === 'audio' && (
-                <audio controls src={reward.content} className="w-full" />
+                <audio controls src={content} className="w-full" />
               )}
               {reward.type === 'video' && (
-                <video controls src={reward.content} className="max-w-full max-h-full rounded" />
+                <video controls src={content} className="max-w-full max-h-full rounded" />
               )}
             </div>
             {/* Imagen opened.png por encima, ahora permite clic para abrir modal */}
@@ -114,7 +115,8 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
                         for (const img of reward.content) {
                           const link = document.createElement('a');
                           link.href = img;
-                          link.download = img.split('/').pop();
+                          const filename = img.split('/').pop() ?? 'download';
+                          link.download = filename;
                           document.body.appendChild(link);
                           link.click();
                           document.body.removeChild(link);
@@ -144,13 +146,13 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
               </div>
             )}
             {reward.type === 'text' && (
-              <span className="text-center text-lg font-semibold">{reward.content}</span>
+              <span className="text-center text-lg font-semibold">{content}</span>
             )}
             {reward.type === 'audio' && (
-              <audio controls src={reward.content} className="w-full" />
+              <audio controls src={content} className="w-full" />
             )}
             {reward.type === 'video' && showModal && (
-              <video controls src={reward.content} className="max-w-full max-h-60 rounded" autoPlay={false} />
+              <video controls src={content} className="max-w-full max-h-60 rounded" autoPlay={false} />
             )}
             <div className="w-full flex flex-col items-center mt-4 gap-2">
               <button

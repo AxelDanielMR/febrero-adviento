@@ -6,7 +6,7 @@ interface AdvientoDay {
   openDate: Date;
   reward: {
     type: RewardType;
-    content: string;
+    content: string | string[];
   };
 }
 
@@ -18,20 +18,20 @@ interface AdvientoGridProps {
 
 const advientoDays: AdvientoDay[] = [
   // Demo data, replace with real rewards and dates
-  { day: 1, openDate: new Date('2026-01-24'), reward: { type: 'video', content: '/video/presentacion.mp4' } },
-  { day: 2, openDate: new Date('2026-01-25'), reward: { type: 'image', content: ['/images/day_1_01.png', '/images/day_1_02.png'] } },
-  { day: 3, openDate: new Date('2026-01-26'), reward: { type: 'audio', content: '/audio/reward3.mp3' } },
-  { day: 4, openDate: new Date('2026-01-27'), reward: { type: 'video', content: '/video/reward4.mp4' } },
-  { day: 5, openDate: new Date('2026-01-28'), reward: { type: 'text', content: '¡Sigue así!' } },
-  { day: 6, openDate: new Date('2026-01-29'), reward: { type: 'image', content: '/images/reward6.png' } },
-  { day: 7, openDate: new Date('2026-01-30'), reward: { type: 'text', content: '¡Ya casi!' } },
-  { day: 8, openDate: new Date('2026-01-31'), reward: { type: 'text', content: '¡Día 8!' } },
-  { day: 9, openDate: new Date('2026-02-01'), reward: { type: 'image', content: '/images/reward9.png' } },
-  { day: 10, openDate: new Date('2026-02-02'), reward: { type: 'audio', content: '/audio/reward10.mp3' } },
-  { day: 11, openDate: new Date('2026-02-03'), reward: { type: 'video', content: '/video/reward11.mp4' } },
-  { day: 12, openDate: new Date('2026-02-04'), reward: { type: 'text', content: '¡Casi terminas!' } },
-  { day: 13, openDate: new Date('2026-02-05'), reward: { type: 'image', content: '/images/reward13.png' } },
-  { day: 14, openDate: new Date('2026-02-06'), reward: { type: 'text', content: '¡Final!' } },
+  { day: 1, openDate: new Date('2026-02-01'), reward: { type: 'video', content: '/video/presentacion.mp4' } },
+  { day: 2, openDate: new Date('2026-02-02'), reward: { type: 'image', content: ['/images/day_1_01.png', '/images/day_1_02.png'] } },
+  { day: 3, openDate: new Date('2026-02-03'), reward: { type: 'text', content: 'En el jardín que caminas\nQuiero ser la huella que impregnas\nLodo aferrado a tu bota,\nEl sonido cuando trotas\n\nEl aire que despeja,\ny purifica\nSol en orbitación,\nque palpita\nCerros en composición,\naun delimita\nUna tierna emoción' } },
+  { day: 4, openDate: new Date('2026-02-04'), reward: { type: 'video', content: '/video/reward4.mp4' } },
+  { day: 5, openDate: new Date('2026-02-05'), reward: { type: 'text', content: '¡Sigue así!' } },
+  { day: 6, openDate: new Date('2026-02-06'), reward: { type: 'image', content: '/images/reward6.png' } },
+  { day: 7, openDate: new Date('2026-02-07'), reward: { type: 'text', content: '¡Ya casi!' } },
+  { day: 8, openDate: new Date('2026-02-08'), reward: { type: 'text', content: '¡Día 8!' } },
+  { day: 9, openDate: new Date('2026-02-09'), reward: { type: 'image', content: '/images/reward9.png' } },
+  { day: 10, openDate: new Date('2026-02-10'), reward: { type: 'audio', content: '/audio/reward10.mp3' } },
+  { day: 11, openDate: new Date('2026-02-11'), reward: { type: 'video', content: '/video/reward11.mp4' } },
+  { day: 12, openDate: new Date('2026-02-12'), reward: { type: 'text', content: '¡Casi terminas!' } },
+  { day: 13, openDate: new Date('2026-02-13'), reward: { type: 'image', content: '/images/reward13.png' } },
+  { day: 14, openDate: new Date('2026-02-14'), reward: { type: 'text', content: '¡Final!' } },
 ];
 
 const PAGES = [
