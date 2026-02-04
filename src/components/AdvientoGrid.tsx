@@ -21,7 +21,7 @@ const advientoDays: AdvientoDay[] = [
   { day: 1, openDate: new Date('2026-02-01'), reward: { type: 'video', content: '/video/presentacion.mp4' } },
   { day: 2, openDate: new Date('2026-02-02'), reward: { type: 'image', content: ['/images/day_1_01.png', '/images/day_1_02.png'] } },
   { day: 3, openDate: new Date('2026-02-03'), reward: { type: 'text', content: 'En el jardín que caminas\nQuiero ser la huella que impregnas\nLodo aferrado a tu bota,\nEl sonido cuando trotas\n\nEl aire que despeja,\ny purifica\nSol en orbitación,\nque palpita\nCerros en composición,\naun delimita\nUna tierna emoción' } },
-  { day: 4, openDate: new Date('2026-02-04'), reward: { type: 'video', content: '/video/reward4.mp4' } },
+  { day: 4, openDate: new Date('2026-02-04'), reward: { type: 'image', content: '/images/cupon_chinos.png' } },
   { day: 5, openDate: new Date('2026-02-05'), reward: { type: 'text', content: '¡Sigue así!' } },
   { day: 6, openDate: new Date('2026-02-06'), reward: { type: 'image', content: '/images/reward6.png' } },
   { day: 7, openDate: new Date('2026-02-07'), reward: { type: 'text', content: '¡Ya casi!' } },

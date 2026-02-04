@@ -62,7 +62,7 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
             {/* Fondo marrón */}
             <div className="absolute inset-0 w-full h-full rounded" style={{ background: '#231406', zIndex: 0 }} />
             {/* Recompensa */}
-            <div className="relative z-10 w-full h-full flex items-center justify-center">
+            <div className="relative z-10 w-full h-full flex items-center justify-center p-2">
               {reward.type === 'image' && (
                 <img
                   src={Array.isArray(reward.content) ? reward.content[0] : reward.content}
@@ -72,7 +72,12 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
                 />
               )}
               {reward.type === 'text' && (
-                <span className="text-center text-lg font-semibold text-white">{content}</span>
+                <div className="text-center text-white flex flex-col items-center justify-center p-2 w-full h-full overflow-hidden">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12 mb-2 opacity-80">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                  </svg>
+                  <span className="text-sm font-semibold opacity-80">Click para leer</span>
+                </div>
               )}
               {reward.type === 'audio' && (
                 <audio controls src={content} className="w-full" />
@@ -146,7 +151,14 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
               </div>
             )}
             {reward.type === 'text' && (
-              <span className="text-center text-lg font-semibold">{content}</span>
+              <div className="w-full max-w-md">
+                <span className="font-bold text-lg text-pink-700 mb-4 block text-center">Mensaje especial</span>
+                <div className="bg-pink-50 p-6 rounded-lg border-2 border-pink-200 max-h-[70vh] overflow-y-auto">
+                  <p className="text-center text-base whitespace-pre-line leading-relaxed text-gray-800">
+                    {content}
+                  </p>
+                </div>
+              </div>
             )}
             {reward.type === 'audio' && (
               <audio controls src={content} className="w-full" />
