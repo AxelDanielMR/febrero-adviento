@@ -11,6 +11,14 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "cleanUrls": true,
+    "trailingSlash": true,
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/404.html"
+      }
     ]
   }
 }

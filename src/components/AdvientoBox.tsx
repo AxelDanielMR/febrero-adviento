@@ -25,6 +25,12 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
   const canOpen = now >= openDate;
   const content = Array.isArray(reward.content) ? reward.content[0] : reward.content;
 
+  // Debugging: log reward props to help diagnose stale/incorrect rewards
+  if (process.env.NODE_ENV !== 'production') {
+    // eslint-disable-next-line no-console
+    console.debug(`AdvientoBox: day=${day} reward.type=${reward.type} reward.content=`, reward.content);
+  }
+
   const handleOpen = () => {
     if (!isOpened && canOpen) {
       setLocalOpened(true);
@@ -103,7 +109,7 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
           <div className="bg-white rounded-xl p-6 shadow-xl max-w-lg flex flex-col items-center gap-4 border-2 border-pink-300 relative" onClick={e => e.stopPropagation()}>
             {reward.type === 'image' && (
               <div className="relative w-full flex flex-col items-center">
-                <span className="font-bold text-lg text-pink-700 mb-2">Nuevo Sticker</span>
+                <span className="font-bold text-lg text-pink-700 mb-2">{day === 5 ? 'Retratooooo' : 'Nuevo Sticker'}</span>
                 <div className="relative w-full flex justify-center">
                   <img
                     src={Array.isArray(reward.content) ? reward.content[0] : reward.content}

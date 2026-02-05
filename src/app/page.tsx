@@ -1,7 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "../components/AuthProvider";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 
@@ -10,14 +9,6 @@ export default function Home() {
   const [showModal, setShowModal] = useState(false);
   const [gifKey, setGifKey] = useState(0);
   const router = useRouter();
-  const { user } = useAuth();
-
-  useEffect(() => {
-    if (!user) {
-      router.replace("/login");
-      return;
-    }
-  }, [user, router]);
 
   const handleGifClick = () => {
     setGifKey(prev => prev + 1); // fuerza reinicio del gif
