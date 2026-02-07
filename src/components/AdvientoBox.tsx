@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export type RewardType = 'image' | 'text' | 'audio' | 'video';
+export type RewardType = 'image' | 'text' | 'audio' | 'video' | 'gif';
 
 export interface AdvientoBoxProps {
   day: number;
@@ -20,10 +20,13 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
   const [localOpened, setLocalOpened] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const now = today || new Date();
   const isOpened = opened || localOpened;
   const canOpen = now >= openDate;
   const content = Array.isArray(reward.content) ? reward.content[0] : reward.content;
+  const imageArray = Array.isArray(reward.content) ? reward.content : [reward.content];
+  const hasMultipleImages = Array.isArray(reward.content) && reward.content.length > 1;
 
   // Debugging: log reward props to help diagnose stale/incorrect rewards
   if (process.env.NODE_ENV !== 'production') {
@@ -35,12 +38,37 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
     if (!isOpened && canOpen) {
       setLocalOpened(true);
       setShowModal(true);
+      setCurrentImageIndex(0);
       if (onOpen) onOpen(day);
     } else if (isOpened) {
       setShowModal(true);
+      setCurrentImageIndex(0);
     } else if (canOpen) {
       // Si está abierta pero no en local, igual permite abrir
       setShowModal(true);
+      setCurrentImageIndex(0);
+    }
+  };
+
+  const handlePrevImage = () => {
+    setCurrentImageIndex((prev) => (prev > 0 ? prev - 1 : imageArray.length - 1));
+  };
+
+  const handleNextImage = () => {
+    setCurrentImageIndex((prev) => (prev < imageArray.length - 1 ? prev + 1 : 0));
+  };
+
+  const handleDownloadAll = async () => {
+    for (const img of imageArray) {
+      const link = document.createElement('a');
+      link.href = img;
+      const filename = img.split('/').pop() ?? 'download';
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      // Small delay between downloads
+      await new Promise(resolve => setTimeout(resolve, 100));
     }
   };
 
@@ -91,6 +119,15 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
               {reward.type === 'video' && (
                 <video controls src={content} className="max-w-full max-h-full rounded" />
               )}
+              {reward.type === 'gif' && (
+                <div className="text-center text-white flex flex-col items-center justify-center p-2 w-full h-full overflow-hidden">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12 mb-2 opacity-80">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.91 11.672a.375.375 0 010 .656l-5.603 3.113a.375.375 0 01-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112z" />
+                  </svg>
+                  <span className="text-sm font-semibold opacity-80">Click para ver GIF</span>
+                </div>
+              )}
             </div>
             {/* Imagen opened.png por encima, ahora permite clic para abrir modal */}
             <img
@@ -109,51 +146,64 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
           <div className="bg-white rounded-xl p-6 shadow-xl max-w-lg flex flex-col items-center gap-4 border-2 border-pink-300 relative" onClick={e => e.stopPropagation()}>
             {reward.type === 'image' && (
               <div className="relative w-full flex flex-col items-center">
-                <span className="font-bold text-lg text-pink-700 mb-2">{day === 5 ? 'Retratooooo' : 'Nuevo Sticker'}</span>
-                <div className="relative w-full flex justify-center">
-                  <img
-                    src={Array.isArray(reward.content) ? reward.content[0] : reward.content}
-                    alt="Recompensa grande"
-                    className="max-w-full max-h-[90vh] rounded mb-2"
-                    draggable={false}
-                  />
-                  {Array.isArray(reward.content) ? (
+                <span className="font-bold text-lg text-pink-700 mb-2">{day === 5 ? 'Retratooooo' : day === 6 ? 'Te Encuentro' : 'Nuevo Sticker'}</span>
+                <img
+                  src={imageArray[currentImageIndex]}
+                  alt="Recompensa grande"
+                  className="max-w-full max-h-[70vh] rounded"
+                  draggable={false}
+                />
+                {hasMultipleImages && (
+                  <div className="text-sm text-gray-600 mt-2">
+                    {currentImageIndex + 1} / {imageArray.length}
+                  </div>
+                )}
+                {hasMultipleImages ? (
+                  <div className="flex items-center gap-3 mt-3">
                     <button
-                      className="absolute bottom-2 right-2 bg-white/80 rounded-full p-2 shadow hover:bg-pink-100 transition flex items-center justify-center"
-                      style={{ zIndex: 10 }}
-                      title="Descargar ambas imágenes"
-                      onClick={async () => {
-                        for (const img of reward.content) {
-                          const link = document.createElement('a');
-                          link.href = img;
-                          const filename = img.split('/').pop() ?? 'download';
-                          link.download = filename;
-                          document.body.appendChild(link);
-                          link.click();
-                          document.body.removeChild(link);
-                        }
-                      }}
+                      onClick={handlePrevImage}
+                      className="bg-pink-200 rounded-full p-2 shadow hover:bg-pink-300 transition flex-shrink-0"
+                      title="Imagen anterior"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7 text-pink-700">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4m-9 9h14" />
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 text-pink-700">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                       </svg>
                     </button>
-                  ) : (
-                    <a
-                      href={reward.content}
-                      download
-                      className="absolute bottom-2 right-2 bg-white/80 rounded-full p-2 shadow hover:bg-pink-100 transition flex items-center justify-center"
-                      title="Descargar imagen"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ zIndex: 10 }}
+                    <button
+                      className="px-4 py-2 bg-pink-600 text-white rounded-lg shadow hover:bg-pink-700 transition flex items-center gap-2"
+                      title="Descargar todas las imágenes"
+                      onClick={handleDownloadAll}
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7 text-pink-700">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4m-9 9h14" />
                       </svg>
-                    </a>
-                  )}
-                </div>
+                      <span className="font-semibold">Descargar todas ({imageArray.length})</span>
+                    </button>
+                    <button
+                      onClick={handleNextImage}
+                      className="bg-pink-200 rounded-full p-2 shadow hover:bg-pink-300 transition flex-shrink-0"
+                      title="Imagen siguiente"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 text-pink-700">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                      </svg>
+                    </button>
+                  </div>
+                ) : (
+                  <a
+                    href={reward.content as string}
+                    download
+                    className="mt-3 px-4 py-2 bg-pink-600 text-white rounded-lg shadow hover:bg-pink-700 transition flex items-center gap-2"
+                    title="Descargar imagen"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4m-9 9h14" />
+                    </svg>
+                    <span className="font-semibold">Descargar</span>
+                  </a>
+                )}
               </div>
             )}
             {reward.type === 'text' && (
@@ -171,6 +221,41 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
             )}
             {reward.type === 'video' && showModal && (
               <video controls src={content} className="max-w-full max-h-60 rounded" autoPlay={false} />
+            )}
+            {reward.type === 'gif' && (
+              <div className="w-full max-w-md flex flex-col items-center">
+                <h2 className="font-bold text-xl text-pink-700 mb-2 text-center">LLEGAMOS A LA MITAD</h2>
+                <p className="text-center text-gray-600 mb-4 text-sm">es tu turno de compartirme que te está pareciendo y un ranking hasta ahora</p>
+                <img
+                  src={content}
+                  alt="GIF especial"
+                  className="max-w-full max-h-[50vh] rounded mb-4"
+                  draggable={false}
+                />
+                <button
+                  onClick={async () => {
+                    // Descargar todos los gifs
+                    const gifs = ['/images/osito_a_osita.gif', '/images/osita_a_osito.gif', '/images/sticker-gif-01.gif', '/images/sticker-gif-02.gif'];
+                    for (const gif of gifs) {
+                      const link = document.createElement('a');
+                      link.href = gif;
+                      const filename = gif.split('/').pop() ?? 'download.gif';
+                      link.download = filename;
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                      await new Promise(resolve => setTimeout(resolve, 100));
+                    }
+                  }}
+                  className="px-4 py-2 bg-pink-600 text-white rounded-lg shadow hover:bg-pink-700 transition flex items-center gap-2"
+                  title="Descargar GIFs"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4m-9 9h14" />
+                  </svg>
+                  <span className="font-semibold">Descargar GIFs (4)</span>
+                </button>
+              </div>
             )}
             <div className="w-full flex flex-col items-center mt-4 gap-2">
               <button
