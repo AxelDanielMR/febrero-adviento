@@ -224,13 +224,21 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
             )}
             {reward.type === 'gif' && (
               <div className="w-full max-w-md flex flex-col items-center">
-                <h2 className="font-bold text-xl text-pink-700 mb-2 text-center">LLEGAMOS A LA MITAD</h2>
-                <p className="text-center text-gray-600 mb-4 text-sm">es tu turno de compartirme que te está pareciendo y un ranking hasta ahora</p>
+                {day === 8 ? (
+                  <h2 className="font-bold text-xl text-pink-700 mb-2 text-center leading-tight">F3LIIIIZz DïAaaAA &gt;:3!!!!
+                  <br />XoOOXXxoOOXXx</h2>
+                ) : (
+                  <>
+                    <h2 className="font-bold text-xl text-pink-700 mb-2 text-center">LLEGAMOS A LA MITAD</h2>
+                    <p className="text-center text-gray-600 mb-4 text-sm">es tu turno de compartirme que te está pareciendo y un ranking hasta ahora</p>
+                  </>
+                )}
                 <img
                   src={content}
                   alt="GIF especial"
                   className="max-w-full max-h-[50vh] rounded mb-4"
                   draggable={false}
+                  style={{ imageRendering: 'auto' }}
                 />
                 <button
                   onClick={async () => {
