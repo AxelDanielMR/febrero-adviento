@@ -146,7 +146,7 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
           <div className="bg-white rounded-xl p-6 shadow-xl max-w-lg flex flex-col items-center gap-4 border-2 border-pink-300 relative" onClick={e => e.stopPropagation()}>
             {reward.type === 'image' && (
               <div className="relative w-full flex flex-col items-center">
-                <span className="font-bold text-lg text-pink-700 mb-2">{day === 5 ? 'Retratooooo' : day === 6 ? 'Te Encuentro' : 'Nuevo Sticker'}</span>
+                <span className="font-bold text-lg text-pink-700 mb-2">{day === 5 ? 'Retratooooo' : day === 6 ? 'Te Encuentro' : day === 9 ? 'Nuevo cupón' : 'Nuevo Sticker'}</span>
                 <img
                   src={imageArray[currentImageIndex]}
                   alt="Recompensa grande"
@@ -267,19 +267,24 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
                     <span className="font-semibold">Descargar GIFs (4)</span>
                   </button>
                 ) : (
-                  <a
-                    href={content}
-                    download
+                  <button
+                    onClick={async () => {
+                      const link = document.createElement('a');
+                      link.href = content;
+                      const filename = content.split('/').pop() ?? 'download.gif';
+                      link.download = filename;
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                    }}
                     className="px-4 py-2 bg-pink-600 text-white rounded-lg shadow hover:bg-pink-700 transition flex items-center gap-2"
                     title="Descargar GIF"
-                    target="_blank"
-                    rel="noopener noreferrer"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4m-9 9h14" />
                     </svg>
                     <span className="font-semibold">Descargar GIF</span>
-                  </a>
+                  </button>
                 )}
               </div>
             )}
