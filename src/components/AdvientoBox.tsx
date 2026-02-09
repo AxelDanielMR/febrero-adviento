@@ -120,13 +120,12 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
                 <video controls src={content} className="max-w-full max-h-full rounded" />
               )}
               {reward.type === 'gif' && (
-                <div className="text-center text-white flex flex-col items-center justify-center p-2 w-full h-full overflow-hidden">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12 mb-2 opacity-80">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.91 11.672a.375.375 0 010 .656l-5.603 3.113a.375.375 0 01-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112z" />
-                  </svg>
-                  <span className="text-sm font-semibold opacity-80">Click para ver GIF</span>
-                </div>
+                <img
+                  src={content}
+                  alt="GIF recompensa"
+                  className="max-w-full max-h-full rounded mb-2"
+                  draggable={false}
+                />
               )}
             </div>
             {/* Imagen opened.png por encima, ahora permite clic para abrir modal */}
