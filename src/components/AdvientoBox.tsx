@@ -23,7 +23,10 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const now = today || new Date();
   const isOpened = opened || localOpened;
-  const canOpen = now >= openDate;
+  // Comparar solo las fechas sin horas para mejor control
+  const currentDateStr = now.toISOString().split('T')[0];
+  const openDateStr = openDate.toISOString().split('T')[0];
+  const canOpen = currentDateStr >= openDateStr;
   const content = Array.isArray(reward.content) ? reward.content[0] : reward.content;
   const imageArray = Array.isArray(reward.content) ? reward.content : [reward.content];
   const hasMultipleImages = Array.isArray(reward.content) && reward.content.length > 1;
