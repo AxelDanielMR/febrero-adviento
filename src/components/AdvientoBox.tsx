@@ -227,11 +227,13 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
                 {day === 8 ? (
                   <h2 className="font-bold text-xl text-pink-700 mb-2 text-center leading-tight">F3LIIIIZz DïAaaAA &gt;:3!!!!
                   <br />XoOOXXxoOOXXx</h2>
-                ) : (
+                ) : day === 7 ? (
                   <>
                     <h2 className="font-bold text-xl text-pink-700 mb-2 text-center">LLEGAMOS A LA MITAD</h2>
                     <p className="text-center text-gray-600 mb-4 text-sm">es tu turno de compartirme que te está pareciendo y un ranking hasta ahora</p>
                   </>
+                ) : (
+                  <h2 className="font-bold text-xl text-pink-700 mb-2 text-center">GIF Especial</h2>
                 )}
                 <img
                   src={content}
@@ -240,29 +242,45 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
                   draggable={false}
                   style={{ imageRendering: 'auto' }}
                 />
-                <button
-                  onClick={async () => {
-                    // Descargar todos los gifs
-                    const gifs = ['/images/osito_a_osita.gif', '/images/osita_a_osito.gif', '/images/sticker-gif-01.gif', '/images/sticker-gif-02.gif'];
-                    for (const gif of gifs) {
-                      const link = document.createElement('a');
-                      link.href = gif;
-                      const filename = gif.split('/').pop() ?? 'download.gif';
-                      link.download = filename;
-                      document.body.appendChild(link);
-                      link.click();
-                      document.body.removeChild(link);
-                      await new Promise(resolve => setTimeout(resolve, 100));
-                    }
-                  }}
-                  className="px-4 py-2 bg-pink-600 text-white rounded-lg shadow hover:bg-pink-700 transition flex items-center gap-2"
-                  title="Descargar GIFs"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4m-9 9h14" />
-                  </svg>
-                  <span className="font-semibold">Descargar GIFs (4)</span>
-                </button>
+                {day === 7 ? (
+                  <button
+                    onClick={async () => {
+                      // Descargar todos los gifs del día 7
+                      const gifs = ['/images/osito_a_osita.gif', '/images/osita_a_osito.gif', '/images/sticker-gif-01.gif', '/images/sticker-gif-02.gif'];
+                      for (const gif of gifs) {
+                        const link = document.createElement('a');
+                        link.href = gif;
+                        const filename = gif.split('/').pop() ?? 'download.gif';
+                        link.download = filename;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                      }
+                    }}
+                    className="px-4 py-2 bg-pink-600 text-white rounded-lg shadow hover:bg-pink-700 transition flex items-center gap-2"
+                    title="Descargar GIFs"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4m-9 9h14" />
+                    </svg>
+                    <span className="font-semibold">Descargar GIFs (4)</span>
+                  </button>
+                ) : (
+                  <a
+                    href={content}
+                    download
+                    className="px-4 py-2 bg-pink-600 text-white rounded-lg shadow hover:bg-pink-700 transition flex items-center gap-2"
+                    title="Descargar GIF"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4m-9 9h14" />
+                    </svg>
+                    <span className="font-semibold">Descargar GIF</span>
+                  </a>
+                )}
               </div>
             )}
             <div className="w-full flex flex-col items-center mt-4 gap-2">
