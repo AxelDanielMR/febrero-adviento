@@ -38,16 +38,16 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
   }
 
   const handleOpen = () => {
-    if (!isOpened && canOpen) {
+    if (!canOpen) {
+      return; // No hacer nada si no puede abrir
+    }
+    
+    if (!isOpened) {
       setLocalOpened(true);
       setShowModal(true);
       setCurrentImageIndex(0);
       if (onOpen) onOpen(day);
-    } else if (isOpened) {
-      setShowModal(true);
-      setCurrentImageIndex(0);
-    } else if (canOpen) {
-      // Si está abierta pero no en local, igual permite abrir
+    } else {
       setShowModal(true);
       setCurrentImageIndex(0);
     }
@@ -243,6 +243,11 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
                   className="max-w-full max-h-[50vh] rounded mb-4"
                   draggable={false}
                   style={{ imageRendering: 'auto' }}
+                  loading="lazy"
+                  onError={(e) => {
+                    console.error('Error cargando GIF:', content);
+                    e.currentTarget.style.display = 'none';
+                  }}
                 />
                 {day === 7 ? (
                   <button
