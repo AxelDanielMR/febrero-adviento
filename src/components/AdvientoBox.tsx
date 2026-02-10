@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 
 export type RewardType = 'image' | 'text' | 'audio' | 'video' | 'gif';
 
@@ -15,6 +16,42 @@ export interface AdvientoBoxProps {
 }
 
 const padDay = (day: number) => day.toString().padStart(2, '0');
+
+const TypewriterText: React.FC<{ text: string }> = ({ text }) => {
+  const [displayedText, setDisplayedText] = useState('');
+  
+  React.useEffect(() => {
+    let i = 0;
+    const timer = setInterval(() => {
+      if (i < text.length) {
+        setDisplayedText((prev) => prev + text.charAt(i));
+        i++;
+      } else {
+        clearInterval(timer);
+      }
+    }, 60); // Ajusta la velocidad aquí (60ms entre caracteres)
+    
+    return () => clearInterval(timer);
+  }, [text]);
+  
+  return (
+    <motion.p 
+      className="text-left text-base whitespace-pre-line leading-relaxed text-gray-800"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      {displayedText}
+      <motion.span
+        animate={{ opacity: [1, 0, 1] }}
+        transition={{ duration: 0.8, repeat: Infinity }}
+        className="text-pink-600"
+      >
+        |
+      </motion.span>
+    </motion.p>
+  );
+};
 
 export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward, today, opened, onOpen }) => {
   const [localOpened, setLocalOpened] = useState(false);
@@ -210,11 +247,17 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
             )}
             {reward.type === 'text' && (
               <div className="w-full max-w-md">
-                <span className="font-bold text-lg text-pink-700 mb-4 block text-center">Mensaje especial</span>
-                <div className="bg-pink-50 p-6 rounded-lg border-2 border-pink-200 max-h-[70vh] overflow-y-auto">
-                  <p className="text-center text-base whitespace-pre-line leading-relaxed text-gray-800">
-                    {content}
-                  </p>
+                <span className="font-bold text-lg text-pink-700 mb-4 block text-center">
+                  {day === 10 ? 'Carta <3' : 'Mensaje especial'}
+                </span>
+                <div className="bg-gradient-to-br from-amber-50 to-yellow-50 p-8 rounded-lg border-2 border-amber-200 max-h-[70vh] overflow-y-auto shadow-inner relative" style={{ backgroundImage: 'linear-gradient(45deg, #fefbf3 25%, transparent 25%), linear-gradient(-45deg, #fefbf3 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #fefbf3 75%), linear-gradient(-45deg, transparent 75%, #fefbf3 75%)', backgroundSize: '20px 20px', backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px' }}>
+                  {day === 10 ? (
+                    <TypewriterText text={content} />
+                  ) : (
+                    <p className="text-center text-base whitespace-pre-line leading-relaxed text-gray-800">
+                      {content}
+                    </p>
+                  )}
                 </div>
               </div>
             )}
