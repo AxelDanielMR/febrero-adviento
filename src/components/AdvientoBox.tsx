@@ -106,7 +106,7 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
   // Para audio, necesitamos manejar múltiples archivos
   const content = Array.isArray(reward.content) ? reward.content[0] : reward.content;
   const imageArray = Array.isArray(reward.content) ? reward.content : [reward.content];
-  const audioArray = Array.isArray(reward.content) && reward.type === 'audio' ? reward.content : [reward.content];
+  const audioArray = Array.isArray(reward.content) && reward.type === 'audio' ? reward.content : reward.type === 'audio' ? [reward.content] : [];
   const hasMultipleImages = Array.isArray(reward.content) && reward.content.length > 1 && reward.type === 'image';
   const hasMultipleAudios = Array.isArray(reward.content) && reward.content.length > 1 && reward.type === 'audio';
 
