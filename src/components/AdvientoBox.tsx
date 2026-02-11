@@ -17,6 +17,45 @@ export interface AdvientoBoxProps {
 
 const padDay = (day: number) => day.toString().padStart(2, '0');
 
+// Componente de corazones pixelados animados para el día 11
+const PixelatedHearts: React.FC = () => {
+  const hearts = Array.from({ length: 8 }, (_, i) => ({
+    id: i,
+    size: Math.random() * 20 + 15,
+    x: Math.random() * 100,
+    delay: Math.random() * 3,
+    duration: Math.random() * 2 + 3
+  }));
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 rounded-lg">
+      {hearts.map((heart) => (
+        <motion.div
+          key={heart.id}
+          className="absolute text-pink-200"
+          style={{
+            left: `${heart.x}%`,
+            fontSize: `${heart.size}px`,
+          }}
+          animate={{
+            y: [-50, 400],
+            rotate: [0, 360],
+            opacity: [0.2, 0.6, 0.2]
+          }}
+          transition={{
+            duration: heart.duration,
+            repeat: Infinity,
+            delay: heart.delay,
+            ease: "linear"
+          }}
+        >
+          💜
+        </motion.div>
+      ))}
+    </div>
+  );
+};
+
 const TypewriterText: React.FC<{ text: string }> = ({ text }) => {
   const [displayedText, setDisplayedText] = useState('');
   
@@ -64,9 +103,12 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
   const currentDateStr = now.toISOString().split('T')[0];
   const openDateStr = openDate.toISOString().split('T')[0];
   const canOpen = currentDateStr >= openDateStr;
+  // Para audio, necesitamos manejar múltiples archivos
   const content = Array.isArray(reward.content) ? reward.content[0] : reward.content;
   const imageArray = Array.isArray(reward.content) ? reward.content : [reward.content];
-  const hasMultipleImages = Array.isArray(reward.content) && reward.content.length > 1;
+  const audioArray = Array.isArray(reward.content) && reward.type === 'audio' ? reward.content : [reward.content];
+  const hasMultipleImages = Array.isArray(reward.content) && reward.content.length > 1 && reward.type === 'image';
+  const hasMultipleAudios = Array.isArray(reward.content) && reward.content.length > 1 && reward.type === 'audio';
 
   // Debugging: log reward props to help diagnose stale/incorrect rewards
   if (process.env.NODE_ENV !== 'production') {
@@ -154,7 +196,17 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
                 </div>
               )}
               {reward.type === 'audio' && (
-                <audio controls src={content} className="w-full" />
+                <div className="flex flex-col items-center text-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12 mb-2 opacity-80">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.59-.79-1.59-1.76V9.51c0-.97.71-1.76 1.59-1.76h2.24z" />
+                  </svg>
+                  <span className="text-sm font-semibold opacity-80">
+                    {hasMultipleAudios ? `${audioArray.length} Audios` : 'Click para escuchar'}
+                  </span>
+                  {hasMultipleAudios && (
+                    <span className="text-xs opacity-60 mt-1">Click para escuchar</span>
+                  )}
+                </div>
               )}
               {reward.type === 'video' && (
                 <video controls src={content} className="max-w-full max-h-full rounded" />
@@ -262,7 +314,36 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
               </div>
             )}
             {reward.type === 'audio' && (
-              <audio controls src={content} className="w-full" />
+              <div className="w-full max-w-md flex flex-col items-center relative">
+                {day === 11 && <PixelatedHearts />}
+                <div className="relative z-10 w-full">
+                  <h2 className="font-bold text-xl text-pink-700 mb-4 text-center">
+                    {day === 11 ? 'Audios' : 'Audio'}
+                  </h2>
+                  <div className="space-y-4">
+                    {hasMultipleAudios ? (
+                      audioArray.map((audioSrc, index) => {
+                        const audioTitles = [
+                          'Presentación',
+                          'El último recuerdo', 
+                          'Es una buena cosa (Agudo)',
+                          'Es una buena cosa (Grave)'
+                        ];
+                        return (
+                          <div key={index} className="bg-gray-50 p-4 rounded-lg">
+                            <h3 className="font-semibold text-gray-800 mb-2 text-sm">
+                              {day === 11 && audioTitles[index] ? audioTitles[index] : `Audio ${index + 1}`}
+                            </h3>
+                            <audio controls src={audioSrc} className="w-full" />
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <audio controls src={content} className="w-full" />
+                    )}
+                  </div>
+                </div>
+              </div>
             )}
             {reward.type === 'video' && showModal && (
               <video controls src={content} className="max-w-full max-h-60 rounded" autoPlay={false} />
