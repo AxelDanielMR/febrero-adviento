@@ -334,7 +334,7 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
                             <h3 className="font-semibold text-gray-800 mb-2 text-sm">
                               {day === 11 && audioTitles[index] ? audioTitles[index] : `Audio ${index + 1}`}
                             </h3>
-                            <audio controls src={audioSrc} className="w-full" />
+                            <audio controls src={Array.isArray(audioSrc) ? audioSrc[0] : audioSrc} className="w-full" />
                           </div>
                         );
                       })
