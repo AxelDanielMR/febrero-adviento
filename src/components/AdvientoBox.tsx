@@ -237,7 +237,7 @@ export const AdvientoBox: React.FC<AdvientoBoxProps> = ({ day, openDate, reward,
           <div className="bg-white rounded-xl p-6 shadow-xl max-w-lg flex flex-col items-center gap-4 border-2 border-pink-300 relative" onClick={e => e.stopPropagation()}>
             {reward.type === 'image' && (
               <div className="relative w-full flex flex-col items-center">
-                <span className="font-bold text-lg text-pink-700 mb-2">{day === 5 ? 'Retratooooo' : day === 6 ? 'Te Encuentro' : day === 9 ? 'Nuevo cupón' : 'Nuevo Sticker'}</span>
+                <span className="font-bold text-lg text-pink-700 mb-2">{day === 5 ? 'Retratooooo' : day === 6 ? 'Te Encuentro' : day === 9 ? 'Nuevo cupón' : day === 12 ? 'ZING >:3' : 'Nuevo Sticker'}</span>
                 <img
                   src={imageArray[currentImageIndex]}
                   alt="Recompensa grande"
